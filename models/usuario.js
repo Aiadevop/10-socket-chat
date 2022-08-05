@@ -1,9 +1,6 @@
 //Modelo usuario
 
 const { Schema, model } = require('mongoose');
-const jwt = require('jsonwebtoken');
-const { uid } = require('../helpers/generarJWT');
-
 
 const UsuarioSchema = Schema({
 
@@ -42,7 +39,6 @@ const UsuarioSchema = Schema({
 //Aquí podemos agregar o sobreescribir métodos, vamos a sobreescribir el método toJSON
 //No puede ser una función de flecha si no, no funcionaría el this.
 UsuarioSchema.methods.toJSON = function() {
-
     //Se saca la versión y el password y todos los demás aparecen.
     const { __v, password, _id, ...usuario } = this.toObject();
     usuario.uid = _id;

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { Usuario } = require ('../models')
 
 const generarJWT = (uid = '') => {
 
@@ -19,4 +20,36 @@ const generarJWT = (uid = '') => {
     })
 }
 
-module.exports = { generarJWT };
+const comprobarJWT = async (token = '') => {
+
+    //console.log(token);
+
+    try {        
+        if( token.length <=10) {
+            return null;
+        }
+
+        const { uid } = jwt.verify( token, process.env.SECRETORPRIVATEKEY );        
+        const usuario = await Usuario.findById(uid);
+        console.log(usuario);
+
+        if ( usuario ) {
+            if ( usuario.estado ) {
+                return usuario;
+            } else {    
+                console.log("El usuario fue borrado.");            
+                return null;
+            }
+        } else {
+            console.log("No hay usuario.");
+            return null;
+        }
+
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+
+}
+
+module.exports = { generarJWT , comprobarJWT};

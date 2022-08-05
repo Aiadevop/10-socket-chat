@@ -6,7 +6,7 @@ const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/generarJWT');
 const { googleVerify } = require('../helpers/google-verify');
 
-const login = async(req, res = response) => {
+const login = async (req, res = response) => {
 
     const { correo, password } = req.body;
 
@@ -55,37 +55,37 @@ const login = async(req, res = response) => {
 
 }
 
-const googleSignIn = async (req, res=response) => {
+const googleSignIn = async (req, res = response) => {
 
-    const {id_token} = req.body;
+    const { id_token } = req.body;
 
     try {
 
-        const {nombre, img, correo /*googleUser */} = await googleVerify(id_token);
+        const { nombre, img, correo /*googleUser */ } = await googleVerify(id_token);
 
         //Generar la referencia para el ver si el usuario ya está en la BD
 
-        let usuario = await Usuario.findOne({correo});
+        let usuario = await Usuario.findOne({ correo });
 
-        if(!usuario){
-            
+        if (!usuario) {
+
             const data = {
                 nombre,
                 correo,
                 password: ':P',
                 img,
-                google:true,
-                rol : 'USER_ROLE'
+                google: true,
+                rol: 'USER_ROLE'
 
             };
 
-            usuario  = new Usuario (data);
-            await usuario.save(usuario);
+            usuario = new Usuario(data);
+            await usuario.save(/*usuario*/);
         }
 
         //Si el usuario tiene el estado en falso
 
-        if(!usuario.estado){
+        if (!usuario.estado) {
             return res.status(401).json({
                 msg: 'Hable con el administrador, usuario bloqueado'
             })
@@ -94,23 +94,39 @@ const googleSignIn = async (req, res=response) => {
         //Generar el JWT
         const token = await generarJWT(usuario.id);
 
-        res.json ({
-            msg:'Todo ok',
+        res.json({
+            msg: 'Todo ok',
             token,
             usuario
         })
 
     } catch (error) {
 
-        res.status(400).json ({
-            msg:'Error Google - el token no se pudo verificar.'
+        res.status(400).json({
+            msg: 'Error Google - el token no se pudo verificar.'
         })
         console.log(error);
     }
 }
 
+const renovarToken = async (req, res = response) => {
+
+    const { usuario } = req; //ya valido el usuario el JWT
+
+    //Generar el JWT
+    const token = await generarJWT(usuario.id);
+
+    res.status(200).json({
+        msg: 'Login ok',
+        usuario,
+        token
+    });
+
+}
+
 module.exports = {
     login,
-    googleSignIn
+    googleSignIn,
+    renovarToken
 
 }
