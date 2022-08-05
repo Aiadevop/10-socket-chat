@@ -2,7 +2,7 @@
 
 const url = ( window.location.hostname.includes('localhost') )
             ? 'http://localhost:8090/api/auth/'
-            : 'https://restserver-curso-fher.herokuapp.com/api/auth/';
+            : 'https://socketchat-restserver.herokuapp.com/api/auth/';
 
 let usuario = null;
 let socket  = null;
@@ -132,6 +132,13 @@ const dibujarMensajes = (usuarios = []) =>{
 
     ulMensajes.innerHTML = mensajesHtml;
 }
+
+btnSalir.addEventListener('click', ()=> {
+
+    localStorage.removeItem('token');
+    window.location = 'index.html';
+
+});
 
 
 const main = async() => {
