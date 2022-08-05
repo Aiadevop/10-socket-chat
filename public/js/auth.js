@@ -3,7 +3,7 @@ const miFormulario = document.querySelector('form');
 
 const url = (window.location.hostname.includes('localhost'))
     ? 'http://localhost:8090/api/auth/'
-    : 'https://restserver-curso-fher.herokuapp.com/api/auth/';
+    : 'https://socketchat-restserver.herokuapp.com/api/auth/';
 
 
 miFormulario.addEventListener('submit', ev => {
